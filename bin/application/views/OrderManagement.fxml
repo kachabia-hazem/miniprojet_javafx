@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" prefWidth="800.0" prefHeight="500.0" style="-fx-background-color: #fff8f0;">
+    <VBox spacing="15" layoutX="30" layoutY="30" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="20" AnchorPane.bottomAnchor="20">
+        
+        <Label text="📦 Historique des Commandes" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #8B4513;" />
+        
+        <TableView fx:id="ordersTable" prefHeight="400" style="-fx-background-color: white; -fx-border-color: #ccc; -fx-border-radius: 10; -fx-background-radius: 10;">
+            <columns>
+                <TableColumn text="Commande ID" prefWidth="120"/>
+                <TableColumn text="Client" prefWidth="150"/>
+                <TableColumn text="Articles" prefWidth="250"/>
+                <TableColumn text="Statut" prefWidth="120"/>
+                <TableColumn text="Actions" prefWidth="100"/>
+            </columns>
+        </TableView>
+    </VBox>
+</AnchorPane>

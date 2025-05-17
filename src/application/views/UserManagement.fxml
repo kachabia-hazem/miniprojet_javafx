@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" prefWidth="600.0" prefHeight="400.0" style="-fx-background-color: #fff8e1;">
+    <VBox spacing="20" layoutX="50" layoutY="50" AnchorPane.leftAnchor="50" AnchorPane.rightAnchor="50" AnchorPane.topAnchor="50" AnchorPane.bottomAnchor="50">
+        
+        <!-- Titre -->
+        <Label text="Gestion des utilisateurs" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #e67e22; -fx-font-family: 'Arial';" />
+        
+        <!-- TableView -->
+        <TableView fx:id="usersTable" prefHeight="300" style="-fx-background-color: white; -fx-border-color: #e67e22; -fx-border-radius: 10; -fx-background-radius: 10; -fx-font-size: 14px;">
+            <columns>
+                <TableColumn text="Nom d'utilisateur" prefWidth="200"/>
+                <TableColumn text="Rôle" prefWidth="150"/>
+                <TableColumn text="Action" prefWidth="150"/>
+            </columns>
+        </TableView>
+        
+        <!-- Ajouter un utilisateur -->
+        <Button text="Ajouter un utilisateur" fx:id="addUserButton" style="-fx-font-size: 14px; -fx-background-color: #e67e22; -fx-text-fill: white; -fx-border-radius: 5; -fx-padding: 10 20;" />
+    </VBox>
+</AnchorPane>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="application.controllers.LoginController"
+            prefWidth="600" prefHeight="400"
+            style="-fx-background-color: #fff5e6;">
+
+    <VBox spacing="20" alignment="CENTER"
+          layoutX="100" layoutY="50"
+          AnchorPane.leftAnchor="100" AnchorPane.rightAnchor="100"
+          AnchorPane.topAnchor="50" AnchorPane.bottomAnchor="50"
+          style="-fx-background-color: white; -fx-padding: 40; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 5);">
+
+        <Label text="Bienvenue au Restaurant"
+               style="-fx-font-size: 24px; -fx-text-fill: #d35400; -fx-font-weight: bold;" />
+
+        <TextField fx:id="usernameField" promptText="Nom d'utilisateur"
+                   style="-fx-background-radius: 10; -fx-padding: 8;" />
+
+        <PasswordField fx:id="passwordField" promptText="Mot de passe"
+                       style="-fx-background-radius: 10; -fx-padding: 8;" />
+
+        <Button fx:id="loginButton" text="Se connecter"
+                onAction="#handleLogin"
+                style="-fx-background-color: #e67e22; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 10 20;" />
+
+        <Hyperlink fx:id="registerLink" text="Créer un compte"
+                   onAction="#handleRegisterLink"
+                   style="-fx-text-fill: #2980b9;" />
+
+        <Label fx:id="errorLabel"
+               style="-fx-text-fill: red; -fx-font-weight: bold;" />
+    </VBox>
+</AnchorPane>

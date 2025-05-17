@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+<?import javafx.scene.image.ImageView?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="application.controllers.ClientDashboardController"
+            prefWidth="900" prefHeight="600"
+            style="-fx-background-color: linear-gradient(to bottom right, #fff3e0, #ffe0b2);">
+
+    <!-- TOP Banner -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: #e67e22; -fx-padding: 20;">
+            <Label text="🍽️ Restaurant Bon Appétit"
+                   style="-fx-text-fill: white; -fx-font-size: 26px; -fx-font-weight: bold;" />
+        </HBox>
+    </top>
+
+    <!-- CENTER Buttons -->
+    <center>
+        <VBox alignment="CENTER" spacing="30" style="-fx-padding: 60;">
+            <Label text="Bienvenue, cher client 👋"
+                   style="-fx-font-size: 22px; -fx-text-fill: #d35400; -fx-font-weight: bold;" />
+            
+            <Button fx:id="menuButton" text="📋 Voir le Menu"
+                    onAction="#handleMenuButton"
+                    style="-fx-background-color: #ff7043; -fx-text-fill: white; -fx-font-size: 18px;
+                           -fx-background-radius: 15; -fx-padding: 12 30; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0.3, 0, 4);" />
+
+            <Button fx:id="ordersButton" text="🧾 Voir mes Commandes"
+                    onAction="#handleOrdersButton"
+                    style="-fx-background-color: #ffa726; -fx-text-fill: white; -fx-font-size: 18px;
+                           -fx-background-radius: 15; -fx-padding: 12 30; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0.3, 0, 4);" />
+        </VBox>
+    </center>
+
+    <!-- BOTTOM Footer -->
+    <bottom>
+        <HBox alignment="CENTER" style="-fx-padding: 15;">
+            <Label text="🍴 Merci de votre visite – Bon appétit !" 
+                   style="-fx-text-fill: #888; -fx-font-style: italic;" />
+        </HBox>
+    </bottom>
+
+</BorderPane>

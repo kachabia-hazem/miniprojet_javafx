@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="application.controllers.MenuViewController"
+            prefWidth="1000" prefHeight="600"
+            style="-fx-background-color: linear-gradient(to bottom, #fff3e0, #ffe0b2);">
+
+    <VBox spacing="20" layoutX="50" layoutY="40" alignment="TOP_CENTER">
+        <!-- Titre et Panier -->
+        <HBox alignment="CENTER" spacing="200">
+            <!-- Titre -->
+            <Label text="🍽️ Menu du Jour"
+                   style="-fx-font-size: 26px; -fx-text-fill: #e67e22; -fx-font-weight: bold;" />
+                   
+            <!-- Bouton Panier -->
+            <HBox alignment="CENTER_RIGHT" spacing="10">
+                <Button fx:id="viewCartButton" text="🛒 Voir Panier" onAction="#viewCart"
+                        style="-fx-background-color: #2ecc71; -fx-text-fill: white;
+                               -fx-font-size: 14px; -fx-background-radius: 10; -fx-padding: 8 15;" />
+                <Label fx:id="cartCountLabel" text="0" 
+                       style="-fx-background-color: #e74c3c; -fx-text-fill: white;
+                              -fx-font-weight: bold; -fx-padding: 2 8; -fx-background-radius: 50%;" />
+            </HBox>
+        </HBox>
+
+        <!-- Scrollable GridPane pour les cartes de produits -->
+        <ScrollPane fitToWidth="true"
+                    style="-fx-background: white; -fx-border-color: #d35400; -fx-border-radius: 8;"
+                    prefHeight="500">
+            <GridPane fx:id="productsGrid"
+                      hgap="20" vgap="20"
+                      style="-fx-padding: 20px;"
+                      alignment="TOP_CENTER" />
+        </ScrollPane>
+
+        <!-- Bouton Retour -->
+        <Button text="↩️ Retour au tableau de bord" onAction="#returnToDashboard"
+                style="-fx-background-color: #3498db; -fx-text-fill: white;
+                       -fx-font-size: 16px; -fx-background-radius: 10; -fx-padding: 10 20;" />
+    </VBox>
+</AnchorPane>

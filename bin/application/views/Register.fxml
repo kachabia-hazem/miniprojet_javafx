@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" prefWidth="400.0" prefHeight="400.0" style="-fx-background-color: #fff8e1;">
+    <VBox alignment="CENTER" spacing="20" layoutX="50" layoutY="50" AnchorPane.leftAnchor="50" AnchorPane.rightAnchor="50" AnchorPane.topAnchor="50" AnchorPane.bottomAnchor="50">
+        
+        <!-- Titre -->
+        <Label text="Créer un compte" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #d35400; -fx-font-family: 'Arial';" />
+        
+        <!-- Champ Nom d'utilisateur -->
+        <TextField fx:id="usernameField" promptText="Nom d'utilisateur" style="-fx-font-size: 14px; -fx-background-color: #ffffff; -fx-border-color: #e67e22; -fx-border-radius: 5; -fx-padding: 10;" />
+        
+        <!-- Champ Mot de passe -->
+        <PasswordField fx:id="passwordField" promptText="Mot de passe" style="-fx-font-size: 14px; -fx-background-color: #ffffff; -fx-border-color: #e67e22; -fx-border-radius: 5; -fx-padding: 10;" />
+        
+        <!-- Bouton S'inscrire -->
+        <Button text="S'inscrire" fx:id="registerButton" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-background-color: #e67e22; -fx-text-fill: white; -fx-border-radius: 5; -fx-padding: 12 20;" />
+    </VBox>
+</AnchorPane>

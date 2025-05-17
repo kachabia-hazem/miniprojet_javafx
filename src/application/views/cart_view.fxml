@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="application.controllers.CartViewController"
+            prefWidth="1000" prefHeight="600"
+            style="-fx-background-color: linear-gradient(to bottom, #fff3e0, #ffe0b2);">
+
+    <VBox spacing="20" layoutX="50" layoutY="40" AnchorPane.leftAnchor="50" AnchorPane.rightAnchor="50" AnchorPane.topAnchor="40" AnchorPane.bottomAnchor="40">
+        <!-- Titre -->
+        <Label text="🛒 Votre Panier" 
+               style="-fx-font-size: 26px; -fx-text-fill: #e67e22; -fx-font-weight: bold;" />
+               
+        <!-- Informations du panier -->
+        <HBox spacing="20">
+            <Label text="Total articles:" 
+                   style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+            <Label fx:id="totalItemsLabel" text="0" 
+                   style="-fx-font-size: 16px;" />
+                   
+            <Pane HBox.hgrow="ALWAYS" />
+            
+            <Label text="Montant total:" 
+                   style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+            <Label fx:id="totalAmountLabel" text="0.00 €" 
+                   style="-fx-font-size: 16px;" />
+        </HBox>
+
+        <!-- Liste des produits dans le panier -->
+        <TableView fx:id="cartTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="productNameColumn" text="Produit" prefWidth="300" />
+                <TableColumn fx:id="productPriceColumn" text="Prix" prefWidth="100" />
+                <TableColumn fx:id="quantityColumn" text="Quantité" prefWidth="100" />
+                <TableColumn fx:id="totalColumn" text="Total" prefWidth="100" />
+                <TableColumn fx:id="actionColumn" text="Action" prefWidth="100" />
+            </columns>
+        </TableView>
+        
+        <!-- Boutons d'action -->
+        <HBox spacing="20" alignment="CENTER_RIGHT">
+            <Button text="Vider le panier" onAction="#clearCart"
+                    style="-fx-background-color: #e74c3c; -fx-text-fill: white;
+                           -fx-font-size: 14px; -fx-background-radius: 10; -fx-padding: 10 20;" />
+                           
+            <Button text="Continuer les achats" onAction="#continueShopping"
+                    style="-fx-background-color: #3498db; -fx-text-fill: white;
+                           -fx-font-size: 14px; -fx-background-radius: 10; -fx-padding: 10 20;" />
+                           
+            <Button text="Passer la commande" onAction="#placeOrder"
+                    style="-fx-background-color: #2ecc71; -fx-text-fill: white;
+                           -fx-font-size: 14px; -fx-background-radius: 10; -fx-padding: 10 20;" />
+        </HBox>
+    </VBox>
+</AnchorPane>
