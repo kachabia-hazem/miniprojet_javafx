@@ -1,35 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.geometry.Pos?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
 
-<VBox fx:id="cardBox" alignment="CENTER" spacing="10"
-      xmlns="http://javafx.com/javafx/19"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="application.controllers.ProductCardController"
-      style="-fx-background-color: white; -fx-padding: 15; -fx-border-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);"
-      maxWidth="200">
+<VBox xmlns:fx="http://javafx.com/fxml"
+fx:controller="application.controllers.ProductCardController"
+spacing="10" alignment="CENTER"
+style="-fx-background-color: white; -fx-border-color: #d0d0d0; -fx-border-radius: 5; -fx-padding: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);"
+prefWidth="200" prefHeight="280">
 
-    <ImageView fx:id="productImage" fitWidth="150" fitHeight="150" preserveRatio="true" />
+<!-- Image du produit -->
+<ImageView fx:id="productImage" fitWidth="160" fitHeight="120" preserveRatio="true"/>
 
-    <Label fx:id="productName" style="-fx-font-weight: bold; -fx-font-size: 14;" />
+<!-- Détails du produit -->
+<Label fx:id="productNameLabel" style="-fx-font-size: 16px; -fx-font-weight: bold;" wrapText="true" />
+<Label fx:id="productPriceLabel" style="-fx-font-size: 14px; -fx-text-fill: #e67e22;" />
+<Label fx:id="productCategory" style="-fx-font-size: 12px; -fx-text-fill: #7f8c8d;" />
 
-    <Label fx:id="productPrice" style="-fx-text-fill: #e67e22; -fx-font-size: 16;" />
+<!-- Quantité -->
+<HBox spacing="5" alignment="CENTER">
+    <Label text="Quantité:" />
+    <Label fx:id="quantityLabel" text="0" />
+</HBox>
 
-    <Label fx:id="productCategory" style="-fx-font-size: 12; -fx-text-fill: #666;" />
+<!-- Boutons -->
+<HBox spacing="10" alignment="CENTER">
+    <Button fx:id="addToCartButton" text="Ajouter" onAction="#addToCart"
+            style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-size: 12px;" />
 
-    <!-- Bouton Commander avec compteur de quantité -->
-    <HBox spacing="10" alignment="CENTER">
-        <Button fx:id="orderButton" text="Commander" onAction="#incrementQuantity"
-                style="-fx-background-color: #27ae60; -fx-text-fill: white; 
-                       -fx-font-size: 12px; -fx-background-radius: 5;" />
-                       
-        <Label fx:id="quantityLabel" text="0"
-               style="-fx-background-color: #f1c40f; -fx-text-fill: #34495e; 
-                      -fx-font-weight: bold; -fx-padding: 5 10; -fx-background-radius: 5;" />
-    </HBox>
+    <!-- Boutons admin -->
+    <Button fx:id="editButton" text="Modifier" onAction="#editProduct"
+            style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 12px;" />
+    <Button fx:id="deleteButton" text="Supprimer" onAction="#deleteProduct"
+            style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 12px;" />
+</HBox>
 </VBox>

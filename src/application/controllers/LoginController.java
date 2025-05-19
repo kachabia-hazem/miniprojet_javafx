@@ -1,12 +1,17 @@
 package application.controllers;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import application.DatabaseConnector;
+import application.Session;
+import application.models.User;
 import javafx.event.ActionEvent;
-import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.scene.Parent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.stage.Stage;
+
 import java.io.IOException;
 import java.sql.*;
 
@@ -18,59 +23,89 @@ public class LoginController {
     @FXML private Hyperlink registerLink;
     @FXML private Label errorLabel;
 
-    // Connexion à la base de données
-    private Connection getConnection() throws SQLException {
-        String url = "jdbc:mysql://localhost:3306/restaurant_db";
-        String user = "root";  // Remplacez par votre utilisateur MySQL
-        String password = "";  // Remplacez par votre mot de passe MySQL
-        return DriverManager.getConnection(url, user, password);
+    @FXML
+    public void initialize() {
+        // Initialisation si besoin
+        if (errorLabel != null) {
+            errorLabel.setText("");
+        }
     }
 
     @FXML
-    private void handleLogin(ActionEvent event) {
+    public void handleLogin(ActionEvent event) {
         String username = usernameField.getText().trim();
         String password = passwordField.getText().trim();
 
         if (username.isEmpty() || password.isEmpty()) {
-            showError("Veuillez remplir tous les champs !");
+            showAlert(Alert.AlertType.ERROR, "Champs vides", "Veuillez remplir tous les champs.");
+            if (errorLabel != null) {
+                errorLabel.setText("Veuillez remplir tous les champs.");
+            }
             return;
         }
 
-        try (Connection conn = getConnection()) {
-            if (authenticate(conn, username, password)) {
-                redirectToClientDashboard(event);
-            } else {
-                showError("Identifiants incorrects !");
+        User user = authenticateUser(username, password);
+
+        if (user != null) {
+            Session.getInstance().setCurrentUser(user);
+            redirectToDashboard(user.getRole(), event);
+        } else {
+            showAlert(Alert.AlertType.ERROR, "Connexion échouée", "Nom d'utilisateur ou mot de passe incorrect.");
+            if (errorLabel != null) {
+                errorLabel.setText("Nom d'utilisateur ou mot de passe incorrect.");
+            }
+        }
+    }
+
+    private User authenticateUser(String username, String password) {
+        // IMPORTANT: Vérifiez le nom de votre table (users ou user)
+        String query = "SELECT * FROM users WHERE username = ? AND password = ?"; // Attention : à sécuriser
+        
+        try (Connection conn = DatabaseConnector.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getInt("id"));
+                    user.setUsername(rs.getString("username"));
+                    user.setPassword(rs.getString("password"));
+                    user.setRole(rs.getString("role"));
+                    return user;
+                }
             }
         } catch (SQLException e) {
-            showError("Erreur de connexion à la base de données");
+            System.err.println("Erreur SQL lors de l'authentification :");
             e.printStackTrace();
         }
+        return null;
     }
 
-    private boolean authenticate(Connection conn, String username, String password) throws SQLException {
-        String query = "SELECT password FROM users WHERE username = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, username);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                String dbPassword = rs.getString("password");
-                return password.equals(dbPassword);  // À sécuriser plus tard
-            }
+    private void redirectToDashboard(String role, ActionEvent event) {
+        String viewPath;
+        
+        // Redirection selon le rôle
+        if ("admin".equalsIgnoreCase(role)) {
+            viewPath = "/application/views/AdminDashboard.fxml"; // Assurez-vous que ce fichier existe!
+        } else {
+            viewPath = "/application/views/ClientDashboard.fxml";
         }
-        return false;
-    }
 
-    private void redirectToClientDashboard(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/views/ClientDashboard.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(viewPath));
             Parent root = loader.load();
-            Stage stage = (Stage) loginButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Tableau de bord client");
+            Scene scene = new Scene(root);
+            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            window.setScene(scene);
+            window.setTitle("Tableau de bord - " + role);
+            window.show();
         } catch (IOException e) {
-            showError("Erreur lors du chargement du dashboard");
+            showAlert(Alert.AlertType.ERROR, "Erreur d'affichage", 
+                    "Impossible de charger la vue du tableau de bord pour " + role);
+            System.err.println("Erreur lors du chargement de la vue " + viewPath + " :");
             e.printStackTrace();
         }
     }
@@ -81,13 +116,19 @@ public class LoginController {
             Parent root = FXMLLoader.load(getClass().getResource("/application/views/Register.fxml"));
             Stage stage = (Stage) registerLink.getScene().getWindow();
             stage.setScene(new Scene(root));
+            stage.setTitle("Inscription");
         } catch (IOException e) {
-            showError("Erreur lors de l'ouverture de l'inscription");
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page d'inscription.");
+            System.err.println("Erreur lors du chargement de la vue d'inscription :");
+            e.printStackTrace();
         }
     }
 
-    private void showError(String message) {
-        errorLabel.setText(message);
-        errorLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+    private void showAlert(Alert.AlertType type, String title, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }

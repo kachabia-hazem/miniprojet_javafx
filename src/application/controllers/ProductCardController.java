@@ -1,146 +1,114 @@
 package application.controllers;
 
+import application.DatabaseConnector;
+import application.models.Product;
+import application.models.ShoppingCart;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
-
-import application.models.Product;
-import application.models.ShoppingCart;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class ProductCardController {
 
-    @FXML
-    private VBox cardBox;
+    @FXML private VBox cardBox;
+    @FXML private ImageView productImage;
+    @FXML private Label productNameLabel; // Modifié pour correspondre au FXML
+    @FXML private Label productPriceLabel; // Modifié pour correspondre au FXML
+    @FXML private Label productCategory;
+    @FXML private Label quantityLabel;
+    @FXML private Button addToCartButton; // Modifié pour correspondre au FXML
+    @FXML private Button editButton;
+    @FXML private Button deleteButton;
 
-    @FXML
-    private ImageView productImage;
-
-    @FXML
-    private Label productName;
-
-    @FXML
-    private Label productPrice;
-
-    @FXML
-    private Label productCategory;
-    
-    @FXML
-    private Button orderButton;
-    
-    @FXML
-    private Label quantityLabel;
-    
     private int quantity = 0;
     private Product currentProduct;
+    private boolean adminMode = false;
     private ShoppingCart cart = ShoppingCart.getInstance();
-    
-    // Interface fonctionnelle pour la notification d'ajout de produit
+
+    // Listener utilisateur
     public interface OnProductAddedListener {
         void onProductAdded();
     }
-    
     private OnProductAddedListener onProductAddedListener;
-    
-    // Setter pour l'écouteur
+
     public void setOnProductAdded(OnProductAddedListener listener) {
         this.onProductAddedListener = listener;
     }
-    
+
     @FXML
     public void initialize() {
-        // Initialisation éventuelle
-        if (quantityLabel != null) {
-            quantityLabel.setText("0");
-        }
+        if (quantityLabel != null) quantityLabel.setText("0");
+        if (editButton != null) editButton.setVisible(false);
+        if (deleteButton != null) deleteButton.setVisible(false);
     }
-    
+
+    // Mode admin
+    public void setAdminMode(boolean isAdmin) {
+        this.adminMode = isAdmin;
+        if (editButton != null) editButton.setVisible(isAdmin);
+        if (deleteButton != null) deleteButton.setVisible(isAdmin);
+    }
+
     @FXML
-    public void incrementQuantity() {
+    public void addToCart() { // Renommé pour correspondre au FXML
         quantity++;
-        quantityLabel.setText(String.valueOf(quantity));
-        
-        // Ajouter le produit au panier global
+        if (quantityLabel != null) quantityLabel.setText(String.valueOf(quantity));
+
         if (currentProduct != null) {
             cart.addProduct(currentProduct);
             System.out.println("Ajouté au panier: " + currentProduct.getName() + ", Quantité: " + quantity);
-            System.out.println("Total dans le panier: " + cart.getTotalQuantity() + " articles pour " + cart.getTotalAmount() + " €");
-            
-            // Notifier l'écouteur que le produit a été ajouté
-            if (onProductAddedListener != null) {
-                onProductAddedListener.onProductAdded();
-            }
+            System.out.println("Total: " + cart.getTotalQuantity() + " articles, " + cart.getTotalAmount() + " €");
+
+            if (onProductAddedListener != null) onProductAddedListener.onProductAdded();
         }
     }
 
     public void setData(Product product) {
         if (product == null) return;
-        
+
         this.currentProduct = product;
-        
-        if (productName != null) productName.setText(product.getName());
-        if (productPrice != null) productPrice.setText(String.format("%.2f €", product.getPrice()));
+        if (productNameLabel != null) productNameLabel.setText(product.getName()); // Modifié
+        if (productPriceLabel != null) productPriceLabel.setText(String.format("%.2f €", product.getPrice())); // Modifié
         if (productCategory != null) productCategory.setText(product.getCategory());
-        
-        // Réinitialiser la quantité pour chaque nouveau produit
+
         quantity = 0;
         if (quantityLabel != null) quantityLabel.setText("0");
 
-        // Récupérer le chemin d'image stocké dans la base de données
         String dbImagePath = product.getImagePath();
-        if (dbImagePath == null || dbImagePath.isEmpty()) {
-            System.err.println("Image path is empty for product: " + product.getName());
-            return;
-        }
+        if (dbImagePath == null || dbImagePath.isEmpty()) return;
 
-        // Extraire seulement le nom du fichier (1.jpeg, 2.jpg, etc.)
         String fileName = new File(dbImagePath).getName();
-
-        // Construire le chemin correct pour accéder à l'image dans les ressources
         String correctPath = "/resources/images/products/" + fileName;
-
         System.out.println("Trying to load image from: " + correctPath);
 
         try {
-            if (productImage == null) {
-                System.err.println("productImage is null!");
-                return;
-            }
-            
+            if (productImage == null) return;
             InputStream imageStream = getClass().getResourceAsStream(correctPath);
 
             if (imageStream != null) {
                 productImage.setImage(new Image(imageStream));
-                System.out.println("Image loaded successfully: " + fileName);
             } else {
-                System.err.println("Image not found: " + correctPath);
-
-                // Essayons de charger directement avec le chemin complet depuis la racine du projet
                 URL imageUrl = getClass().getResource(correctPath);
                 if (imageUrl != null) {
                     productImage.setImage(new Image(imageUrl.toString()));
-                    System.out.println("Image loaded via URL: " + imageUrl);
                 } else {
-                    System.err.println("Image URL is null for: " + correctPath);
-
-                    // Essai avec un chemin absolu (pour le débogage uniquement)
-                    try {
-                        String projectDir = System.getProperty("user.dir");
-                        File imageFile = new File(projectDir, "src/" + dbImagePath);
-                        if (imageFile.exists()) {
-                            productImage.setImage(new Image(imageFile.toURI().toString()));
-                            System.out.println("Image loaded from file system: " + imageFile.getAbsolutePath());
-                        } else {
-                            System.err.println("Image file doesn't exist: " + imageFile.getAbsolutePath());
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
+                    String projectDir = System.getProperty("user.dir");
+                    File imageFile = new File(projectDir, "src/" + dbImagePath);
+                    if (imageFile.exists()) {
+                        productImage.setImage(new Image(imageFile.toURI().toString()));
                     }
                 }
             }
@@ -149,18 +117,84 @@ public class ProductCardController {
         }
     }
 
-    // Méthode pour compatibilité avec MenuViewController
+    // Pour compatibilité
     public void setProduct(Product product) {
         setData(product);
     }
-    
-    // Getter pour récupérer la quantité actuelle
+
     public int getQuantity() {
         return quantity;
     }
-    
-    // Getter pour récupérer le produit actuel
+
     public Product getCurrentProduct() {
         return currentProduct;
+    }
+
+    @FXML
+    public void editProduct() {
+        if (currentProduct != null && adminMode) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/views/edit_product_view.fxml"));
+                Parent editView = loader.load();
+                EditProductController controller = loader.getController();
+                controller.setProduct(currentProduct);
+
+                Stage stage = new Stage();
+                stage.setTitle("Modifier le produit");
+                stage.setScene(new Scene(editView));
+                stage.showAndWait();
+
+                // Ici : rafraîchissement manuel possible
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @FXML
+    public void deleteProduct(javafx.event.ActionEvent event) {
+        if (currentProduct != null && adminMode) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                    "Êtes-vous sûr de vouloir supprimer ce produit ?",
+                    ButtonType.YES, ButtonType.NO);
+            alert.setTitle("Confirmation de suppression");
+            alert.setHeaderText("Supprimer " + currentProduct.getName());
+
+            alert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.YES) {
+                    if (deleteProductFromDB(currentProduct.getId())) {
+                        Alert success = new Alert(Alert.AlertType.INFORMATION, "Produit supprimé avec succès.");
+                        success.showAndWait();
+
+                        Node source = (Node) event.getSource();
+                        Stage stage = (Stage) source.getScene().getWindow();
+                        refreshView(stage);
+                    }
+                }
+            });
+        }
+    }
+
+    private boolean deleteProductFromDB(int productId) {
+        String query = "DELETE FROM products WHERE id = ?";
+        try (Connection conn = DatabaseConnector.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, productId);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Erreur suppression:");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private void refreshView(Stage stage) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/views/menu_view.fxml"));
+            Parent menuView = loader.load();
+            stage.setScene(new Scene(menuView));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

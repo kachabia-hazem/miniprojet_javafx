@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+fx:controller="application.controllers.AddProductController"
+prefWidth="500" prefHeight="400"
+style="-fx-background-color: #f5f5f5;">
+
+<VBox spacing="15" alignment="CENTER" layoutX="50" layoutY="30" prefWidth="400">
+    <Label text="Ajouter un nouveau produit" 
+        style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #e67e22;" />
+        
+    <GridPane hgap="10" vgap="15" alignment="CENTER">
+        <padding><Insets top="20" bottom="20" /></padding>
+        
+        <!-- Nom du produit -->
+        <Label text="Nom:" GridPane.columnIndex="0" GridPane.rowIndex="0" 
+            style="-fx-font-weight: bold;" />
+        <TextField fx:id="nameField" promptText="Nom du produit" 
+            GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="250" />
+            
+        <!-- Prix -->
+        <Label text="Prix (€):" GridPane.columnIndex="0" GridPane.rowIndex="1" 
+            style="-fx-font-weight: bold;" />
+        <TextField fx:id="priceField" promptText="0.00" 
+            GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            
+        <!-- Catégorie -->
+        <Label text="Catégorie:" GridPane.columnIndex="0" GridPane.rowIndex="2" 
+            style="-fx-font-weight: bold;" />
+        <ComboBox fx:id="categoryComboBox" promptText="Sélectionner une catégorie" 
+            GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="250" />
+            
+        <!-- Chemin d'image -->
+        <Label text="Image:" GridPane.columnIndex="0" GridPane.rowIndex="3" 
+            style="-fx-font-weight: bold;" />
+        <TextField fx:id="imagePathField" promptText="/images/produits/nom_image.jpg" 
+            GridPane.columnIndex="1" GridPane.rowIndex="3" />
+    </GridPane>
+    
+    <!-- Boutons -->
+    <HBox spacing="30" alignment="CENTER">
+        <Button fx:id="saveButton" text="Enregistrer" onAction="#saveProduct"
+            style="-fx-background-color: #2ecc71; -fx-text-fill: white; 
+            -fx-font-size: 14px; -fx-padding: 8 20; -fx-background-radius: 5;" />
+            
+        <Button fx:id="cancelButton" text="Annuler" onAction="#cancel"
+            style="-fx-background-color: #95a5a6; -fx-text-fill: white; 
+            -fx-font-size: 14px; -fx-padding: 8 20; -fx-background-radius: 5;" />
+    </HBox>
+</VBox>
+</AnchorPane>

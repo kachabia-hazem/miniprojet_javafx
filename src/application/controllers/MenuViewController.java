@@ -3,6 +3,8 @@ package application.controllers;
 import application.DatabaseConnector;
 import application.models.Product;
 import application.models.ShoppingCart;
+import application.models.User;
+import application.Session;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -31,15 +33,36 @@ public class MenuViewController {
     @FXML
     private Button viewCartButton;
     
+    @FXML
+    private Button addProductButton;  // Nouveau bouton pour ajouter un produit
+    
     private ShoppingCart cart = ShoppingCart.getInstance();
+    private boolean isAdmin = false;
     
     @FXML
     public void initialize() {
+        // Vérifier si l'utilisateur connecté est un admin
+        checkAdminStatus();
+        
+        // Charger les produits
         loadProducts();
         
         // Initialiser le compteur du panier
         if (cartCountLabel != null) {
             updateCartCount();
+        }
+        
+        // Vérifier la visibilité du bouton d'ajout de produit en fonction du rôle
+        if (addProductButton != null) {
+            addProductButton.setVisible(isAdmin);
+        }
+    }
+    
+    private void checkAdminStatus() {
+        // Obtenir l'utilisateur de la session
+        User currentUser = Session.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            isAdmin = "admin".equalsIgnoreCase(currentUser.getRole());
         }
     }
     
@@ -61,6 +84,24 @@ public class MenuViewController {
             window.show();
         } catch (IOException e) {
             System.err.println("Erreur lors du chargement de cart_view.fxml:");
+            e.printStackTrace();
+        }
+    }
+    
+    @FXML
+    public void addNewProduct(ActionEvent event) {
+        try {
+            // Charger la vue d'ajout de produit
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/views/add_product_view.fxml"));
+            Parent addProductView = loader.load();
+            Scene addProductScene = new Scene(addProductView);
+            
+            // Obtenir la fenêtre actuelle et définir la nouvelle scène
+            Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+            window.setScene(addProductScene);
+            window.show();
+        } catch (IOException e) {
+            System.err.println("Erreur lors du chargement de add_product_view.fxml:");
             e.printStackTrace();
         }
     }
@@ -94,6 +135,7 @@ public class MenuViewController {
                 // Récupérer le contrôleur de la carte
                 ProductCardController controller = loader.getController();
                 controller.setProduct(product);
+                controller.setAdminMode(isAdmin);  // Indiquer au contrôleur si l'utilisateur est admin
                 
                 // Ajouter un listener pour mettre à jour le compteur du panier
                 controller.setOnProductAdded(() -> {
